@@ -1,0 +1,97 @@
+= Introduction 
+ 
+A group of methods added to Object class to enable simple mocking 
+of instance or class methods.
+This mocking can be done temporarily within the scope of a block.
+Alternatively it can be done indefinitely until explicitly undone.
+ 
+= Object#mock
+
+method for mocking or adding methods for a single object 
+(or class methods if the object is a class instance)
+methods: a comma separated key value pairs
+where the key is the name of the instance method to be mocked
+and the value is the new definition in the form of a proc or lambda
+or simply the required return for the mocked method
+An optional block can passed so that the mocking is applied
+only within the scope of the block
+
+example usage:
+
+  d = Duck.new; p d.quack; p d.swim; p d.eat("fish")
+  # => "quack!" "swimming!" "yummy fish!!"
+  d.mock(:quack => "Haaahaa", :swim => "Tshhhhhhh") do
+   p d.quack; p d.swim
+  end
+  # => "Haaahaa" "Tshhhhhhh"
+  d.mock(:eat => lambda {|food| "No #{food}. Not hungry!!}) do
+   p d.eat("fish")
+  end
+  # => "No fish. Not hungry!!"
+  d.hi
+  # => NoMethodError: undefined method `hi'
+  d.mock(:hi => "Hi boss!!")
+  d.hi
+  # => "Hi boss!!"
+  p Duck.all;                     # => "quackwaaack waaack quaaaack!"
+  Duck.mock(:all => "Yeeeeeeeehaaaaaah")
+  p Duck.all
+  # => "Yeeeeeeeehaaaaaah"
+  Duck.unmock                     # => [:all]
+  p Duck.all;                     # => "quackwaaack waaack quaaaack!"
+  
+= Object#unmock
+
+method for unmocking methods mocked by mock method
+methods: a comma separated list of names of instance methods to be unmocked
+when no methods are passed all mocked instance methods will be unmocked
+returns: array of the names of methods unmocked
+
+example usage:
+
+  d = Duck.new;
+  p d.quack; p d.swim                   # => "quack!" "swimming!"
+  d.mock(:quack => "Haaahaa", :swim => "Tshhhhhhh")
+  p d.quack; p d.swim                   # => "Haaahaa" "Tshhhhhhh"  
+  d.unmock(:quack, :swim)
+  p d.quack; p d.swim                   # => "quack!" "swimming!"
+  
+= Object#class_mock
+
+The same as mock methods but applies mocking for all instances of the class
+This method can be either called on the class object or on any instance of the class
+
+example usage:
+
+  p Duck.new.quack                      # => "quack!"
+  Duck.class_mock(:quack => "Haaahaa") do
+   p Duck.new.quack                    # => "Haaahaa"
+  end
+  p Duck.new.quack                      # => "quack!"
+
+  d = Duck.new
+  p d.swim                              # => "swimming!"
+  d.class_mock(:swim => "Tshhhhhhh") do
+   p Duck.new.swim; p d.swim           # => "Tshhhhhhh" "Tshhhhhhh"
+  end
+  p Duck.new.swim                       # => "swimming!"
+ 
+= Object#class_unmock
+
+method for unmocking methods mocked using class_mock
+This method can be either called on the class object or on any instance of the class
+methods: a comma separated list of names of instance methods to be unmocked
+when no methods are passed all mocked instance methods will be unmocked
+returns: array of the names of methods unmocked
+
+example:
+
+  d = Duck.new
+  p d.swim                              # => "swimming!"
+  d.class_mock(:swim => "Buckbuckbuck") do
+  p Duck.new.swim; p d.swim             # => "Buckbuckbuck" "Buckbuckbuck"
+  Duck.class_unmock(:swim)
+  p Duck.new.swim; p d.swim             # => "swimming!" "swimming!"
+  
+
+
