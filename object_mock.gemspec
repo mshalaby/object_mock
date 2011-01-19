@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "object_mock"
-  s.version  = "0.1"
+  s.version  = "0.1.1"
   s.date     = "2010-04-19"
   s.summary  = "A simple, flexible and reversible mocking solution"
   s.email    = "mohammed.shalaby@espace.com.eg"

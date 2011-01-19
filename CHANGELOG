@@ -1,3 +1,7 @@
 * 0.1
 first commit
 
+* 0.1.1
+fixed warning caused by typo at lib/object_mock.rb:71
+fixed some error in test/object_mock_test.rb
+fixed a typo in README.rdoc

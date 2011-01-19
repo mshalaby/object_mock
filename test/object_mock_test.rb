@@ -1,4 +1,4 @@
-require "object_mock"
+require "../lib/object_mock"
 require "rubygems"
 require "shoulda"
 
@@ -28,7 +28,6 @@ class ObjectMockTest < Test::Unit::TestCase
   
           @x.mock(:m => lambda { "mocked" }, :l => lambda { self.m.chop.chop }) do
             @mocked_m = @x.m
-            @mocked_m_with_args = @x.m(3)
             @non_mocked = @x2.m
             @mocked_l = @x.l
             @non_mocked2 = @x2.l
@@ -38,7 +37,6 @@ class ObjectMockTest < Test::Unit::TestCase
         
         should("mock the method within the block") do
           assert_equal "mocked", @mocked_m
-          assert_equal "mocked", @mocked_m_with_args
           assert_equal @orig_m, @x.m
           assert_equal "mock", @mocked_l
           assert_equal @orig_l, @x.l

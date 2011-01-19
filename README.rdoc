@@ -88,7 +88,7 @@ example:
 
   d = Duck.new
   p d.swim                              # => "swimming!"
-  d.class_mock(:swim => "Buckbuckbuck") do
+  d.class_mock(:swim => "Buckbuckbuck")
   p Duck.new.swim; p d.swim             # => "Buckbuckbuck" "Buckbuckbuck"
   Duck.class_unmock(:swim)
   p Duck.new.swim; p d.swim             # => "swimming!" "swimming!"

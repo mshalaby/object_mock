@@ -67,7 +67,7 @@ class Object
       if exists.call(name)
         original = "#{name}_#{backup[name].length}"
         object.class_eval { alias_method original, name }
-      elsif
+      else
         original = nil
       end
       
