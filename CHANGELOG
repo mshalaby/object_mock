@@ -5,3 +5,7 @@ first commit
 fixed warning caused by typo at lib/object_mock.rb:71
 fixed some error in test/object_mock_test.rb
 fixed a typo in README.rdoc
+
+* 0.1.2
+ensure unmocking if an exception was raised within the mocking block
+

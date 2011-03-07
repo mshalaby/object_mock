@@ -16,8 +16,11 @@ class Object
   def mock(methods)
     do_mock(methods)
     if block_given?
-      yield
-      unmock(*methods.keys)
+      begin
+        yield
+      ensure
+        unmock(*methods.keys)
+      end
     end
   end
   
@@ -36,8 +39,11 @@ class Object
     do_mock(methods, :instance, lambda {|m| instance_methods.collect{|n| n.to_sym}.include?(m.to_sym)}, self)
  
     if block
-      block.call
-      class_unmock(*methods.keys)
+      begin
+        block.call
+      ensure
+        class_unmock(*methods.keys)
+      end
     end
     
   end

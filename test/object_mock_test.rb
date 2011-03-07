@@ -48,6 +48,19 @@ class ObjectMockTest < Test::Unit::TestCase
           
       end
 
+      context "within a block that raises an exception" do
+        should "ensure unmocking mocked methods" do
+          begin
+            @x.mock(:m => lambda { "mocked" }) do
+              assert_equal "mocked", @x.m
+              @x.not_there
+            end
+          rescue Exception => e
+            assert_equal "m",  @x.m
+          end
+        end
+      end
+
       context "with mock and unmock methods" do
         setup do
   
@@ -177,6 +190,19 @@ class ObjectMockTest < Test::Unit::TestCase
           assert_equal @orig_m2, @x2.m
         end
           
+      end
+
+      context "within a block that raises an exception" do
+        should "ensure unmocking mocked methods" do
+          begin
+            @x.class_mock(:m => lambda { "mocked" }) do
+              assert_equal "mocked", @x2.m
+              @x.not_there
+            end
+          rescue Exception => e
+            assert_equal "m", @x2.m
+          end
+        end
       end
 
       context "with mock and unmock methods" do
