@@ -9,3 +9,5 @@ fixed a typo in README.rdoc
 * 0.1.2
 ensure unmocking if an exception was raised within the mocking block
 
+* 0.1.3
+allow mocking methods taking arguments with supplying the result directly

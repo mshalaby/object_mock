@@ -78,7 +78,7 @@ class Object
       end
       
       backup[name] << original
-      t = result.respond_to?(:to_proc) ? result.to_proc : proc { result }
+      t = result.respond_to?(:to_proc) ? result.to_proc : proc {|*a| result }
       object.class_eval { define_method(name, t) }
     end
     

@@ -10,11 +10,13 @@ class ObjectMockTest < Test::Unit::TestCase
         def m; "m"; end;
         def self.c; "c"; end;
         def l; self.m.upcase; end;
+        def p(a, b); [a, b];end;
       end
       
       @x = X.new
       @orig_m = @x.m
       @orig_l = @x.l
+      @orig_p = @x.p('a', 'b')
       @x2 = X.new
       @orig_m2 = @x2.m
       @orig_l2 = @x2.l
@@ -82,21 +84,56 @@ class ObjectMockTest < Test::Unit::TestCase
       context "with arguments" do
         setup do
   
-          @x.mock(:m => proc {|a, b| "mocked #{a}, #{b}"})
-          @mocked_m = @x.m('a', 'b')
-          @non_mocked = @x2.m
-          @x.unmock(:m)
+          @x.mock(:p => proc {|a, b| "mocked #{a}, #{b}"})
+          @mocked_p = @x.p('a', 'b')
+          @non_mocked = @x2.p('a', 'b')
+          @x.unmock(:p)
           
         end
         
         should("mock the method") do
-          assert_equal "mocked a, b", @mocked_m
-          assert_equal @orig_m, @x.m
+          assert_equal "mocked a, b", @mocked_p
+          assert_equal @orig_p, @x.p('a', 'b')
         end
-        should("not affect other instances") { assert_equal @orig_m, @non_mocked }
+        should("not affect other instances") { assert_equal @orig_p, @non_mocked }
           
       end
     
+      context "with arguments with supplying the result directly irrespective of the arguments" do
+        setup do
+  
+          @x.mock(:p => "mocked p")
+          @mocked_p = @x.p('a', 'b')
+          @non_mocked = @x2.p('a', 'b')
+          @x.unmock(:p)
+          
+        end
+        
+        should("mock the method") do
+          assert_equal "mocked p", @mocked_p
+          assert_equal @orig_p, @x.p('a', 'b')
+        end
+        should("not affect other instances") { assert_equal @orig_p, @non_mocked }
+          
+      end
+
+      context "with arguments using lambda without arguments" do
+        setup do
+  
+          @x.mock(:p => lambda {|*args| "mocked p using #{m}"})
+          @mocked_p = @x.p('a', 'b')
+          @non_mocked = @x2.p('a', 'b')
+          @x.unmock(:p)
+          
+        end
+        
+        should("mock the method") do
+          assert_equal "mocked p using m", @mocked_p
+          assert_equal @orig_p, @x.p('a', 'b')
+        end
+        should("not affect other instances") { assert_equal @orig_p, @non_mocked }
+          
+      end
     end
 
     context "changing the instance method definition while being mocked for an object within a block" do
